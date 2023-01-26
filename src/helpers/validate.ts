@@ -1,7 +1,7 @@
 import { convertedDataType, errorsType } from "../types";
 
 export const validate = (obj: convertedDataType[]): errorsType => {
-  const errors: any = [];
+  const errors: any = {};
   const hasDuplicateReference = obj.reduce((acc, curr) => {
     acc[curr.reference] = ++acc[curr.reference] || 0;
     return acc

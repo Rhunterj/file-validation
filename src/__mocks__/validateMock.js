@@ -5,7 +5,7 @@ export const validateMock = [
     description: "Flowers for Richard Bakker",
     startBalance: 94.9,
     mutation: 14.63,
-    endBalance: 109.53
+    endBalance: 109.53,
   },
   {
     reference: 138932,
@@ -13,7 +13,7 @@ export const validateMock = [
     description: "Candy from Vincent de Vries",
     startBalance: 5429,
     mutation: -939,
-    endBalance: 6368
+    endBalance: 6368,
   },
   {
     reference: 101339,
@@ -21,7 +21,7 @@ export const validateMock = [
     description: "Tickets from Rik King",
     startBalance: 84.46,
     mutation: 40.45,
-    endBalance: 124.91
+    endBalance: 124.91,
   },
   {
     reference: 119582,
@@ -29,7 +29,7 @@ export const validateMock = [
     description: "Subscription from Vincent de Vries",
     startBalance: 38.86,
     mutation: 28.77,
-    endBalance: 67.63
+    endBalance: 67.63,
   },
   {
     reference: 180148,
@@ -37,6 +37,6 @@ export const validateMock = [
     description: "Candy for Rik de Vries",
     startBalance: 51.01,
     mutation: -25.59,
-    endBalance: 25.42
-},
-]
+    endBalance: 25.42,
+  },
+];

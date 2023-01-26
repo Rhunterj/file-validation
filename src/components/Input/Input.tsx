@@ -17,6 +17,12 @@ const Input = ({ label, ...props }: InputProps) => {
   const [errors, setErrors] = useState<errorsType>({ duplicateKeys: [], invalidEndBalance: [] });
 
   useEffect(() => {
+    if (file) {
+      readFile(file);
+    }
+  }, [file])
+  
+  useEffect(() => {
     if (fileText) {
       const json = convertFileToJson(fileText);
 
@@ -32,8 +38,6 @@ const Input = ({ label, ...props }: InputProps) => {
     
     setFile(e.target.files[0]);
     setFileType(e.target.files[0].type);
-
-    readFile(e.target.files[0]);
   }
 
   const readFile = (file: File) => {
@@ -100,7 +104,7 @@ const Input = ({ label, ...props }: InputProps) => {
       return convertXmlToData(fileText!);
     }
 
-    return 'Please provie a valid file';
+    return 'Please provide a valid file';
   }
 
   return (
@@ -108,7 +112,7 @@ const Input = ({ label, ...props }: InputProps) => {
       <h2>Insert your file here: </h2>
       <label>{label}</label>
       <input type="file" accept=".csv, .xml" {...props} onChange={onChange}/>
-      {errors.duplicateKeys.length > 0 || errors.invalidEndBalance.length > 0 && <Errors errors={errors} />}
+      {(errors.duplicateKeys.length > 0 || errors.invalidEndBalance.length > 0) && <Errors errors={errors} />}
     </s.inputWrapper>
   );
 };
