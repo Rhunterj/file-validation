@@ -59,15 +59,17 @@ const Input = ({ label, ...props }: InputProps) => {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
     const result = [];
-    const headers = xmlDoc.getElementsByTagName("column");
+    const records = xmlDoc.querySelectorAll('record')!;
 
-    for (let i = 0; i < headers.length; i++) {
+    for (let i = 0; i < records.length; i++) {
       const obj: Record<string, any> = {};
 
-      const currentline = headers[i].getElementsByTagName("value");
+      const reference = records[i].getAttribute("reference");
+      obj['reference'] = reference;
 
-      for (let j = 0; j < currentline.length; j++) {
-        obj[headers[j].textContent!] = currentline[j].textContent;
+      const children = records[i].children;
+      for (let j = 0; j < children.length; j++) {
+        obj[children[j].tagName!] = children[j].innerHTML;
       }
 
       result.push(obj);
