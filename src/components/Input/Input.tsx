@@ -47,7 +47,8 @@ const Input = ({ label, ...props }: InputProps) => {
       setFileText(reader.result as string);
     };
   
-    reader.readAsText(file);
+    // set encoding to iso-8859-1 to avoid encoding issues
+    reader.readAsText(file, "iso-8859-1");
   }
 
   const convertCsvToData = (csv: string): convertedDataType[] => {
