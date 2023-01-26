@@ -3,8 +3,5 @@ export const slugify = (str: string | undefined): string | undefined => {
     return str
   }
 
-  return str
-    .toLowerCase()
-    .replace(/[^a-z0-9 -]/g, '')
-    .replace(/\s+/g, '-')
+  return str.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
 }
