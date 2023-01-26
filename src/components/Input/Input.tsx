@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { slugify } from "../../helpers/slugify";
 import { convertStringToNumber } from "../../helpers/stringToNumber";
-import { convertedData } from "../../types";
+import { convertedDataType, errorsType } from "../../types";
 import { validate } from "../../helpers/validate";
 import * as s from "./Input.styled";
 import { Errors } from "../Errors/Errors";
@@ -14,7 +14,7 @@ const Input = ({ label, ...props }: InputProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [fileText, setFileText] = useState<string | null>(null); 
   const [fileType, setFileType] = useState<string | null>(null);
-  const [errors, setErrors] = useState<string[]>([]);
+  const [errors, setErrors] = useState<errorsType>({ duplicateKeys: [], invalidEndBalance: [] });
 
   useEffect(() => {
     if (fileText) {
@@ -23,7 +23,6 @@ const Input = ({ label, ...props }: InputProps) => {
       if(typeof json === 'object' && json !== null) {
         const errorsObj = validate(json);
         setErrors(errorsObj);
-        console.log(errors, 'errors1')
       }
     }
   }, [fileText]);
@@ -47,7 +46,7 @@ const Input = ({ label, ...props }: InputProps) => {
     reader.readAsText(file);
   }
 
-  const convertCsvToData = (csv: string): convertedData[] => {
+  const convertCsvToData = (csv: string): convertedDataType[] => {
     const lines = csv.split("\n");
     const result = [];
     const headers = lines[0].split(",");
@@ -61,13 +60,13 @@ const Input = ({ label, ...props }: InputProps) => {
         obj[slugifiedKey!] = convertStringToNumber(currentline[j]);
       }
 
-      result.push((obj as unknown) as convertedData)
+      result.push((obj as unknown) as convertedDataType)
     }
 
     return result;
   }
 
-  const convertXmlToData = (xml: string): convertedData[] => {
+  const convertXmlToData = (xml: string): convertedDataType[] => {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
     const result = [];
@@ -84,7 +83,7 @@ const Input = ({ label, ...props }: InputProps) => {
         obj[children[j].tagName!] = convertStringToNumber(children[j].innerHTML);
       }
 
-      result.push((obj as unknown) as convertedData);
+      result.push((obj as unknown) as convertedDataType);
     }
 
     return result;
@@ -108,8 +107,8 @@ const Input = ({ label, ...props }: InputProps) => {
     <s.inputWrapper>
       <h2>Insert your file here: </h2>
       <label>{label}</label>
-      <input type="file" accept=".csv, .xml"{...props} onChange={onChange}/>
-      {errors.length > 0 && <Errors errors={errors} />}
+      <input type="file" accept=".csv, .xml" {...props} onChange={onChange}/>
+      {errors.duplicateKeys.length > 0 || errors.invalidEndBalance.length > 0 && <Errors errors={errors} />}
     </s.inputWrapper>
   );
 };
