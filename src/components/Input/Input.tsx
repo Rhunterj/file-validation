@@ -1,8 +1,19 @@
 import React, { useEffect, useState } from "react";
+import { slugify } from "../../helpers/slugify";
+import { convertStringToNumber } from "../../helpers/stringToNumber";
 import * as s from "./Input.styled";
 
 interface InputProps {
   label: string;
+}
+
+interface convertedData {
+  accountNumber: string;
+  description: string;
+  endBalance: string | number;
+  mutation: string | number;
+  reference: string | number;
+  startBalance: string | number;
 }
 
 const Input = ({ label, ...props }: InputProps) => {
@@ -12,7 +23,11 @@ const Input = ({ label, ...props }: InputProps) => {
 
   useEffect(() => {
     if (fileText) {
-      convertFileToJson(fileText);
+      const json = convertFileToJson(fileText);
+
+      if(typeof json === 'object' && json !== null) {
+        validateObj(json);
+      }
     }
   }, [fileText]);
 
@@ -25,7 +40,6 @@ const Input = ({ label, ...props }: InputProps) => {
     readFile(e.target.files[0]);
   }
 
-  
   const readFile = (file: File) => {
     const reader = new FileReader();
 
@@ -35,27 +49,28 @@ const Input = ({ label, ...props }: InputProps) => {
   
     reader.readAsText(file);
   }
-  
-  const convertCsvToJson = (csv: string) => {
+
+  const convertCsvToData = (csv: string): convertedData[] => {
     const lines = csv.split("\n");
     const result = [];
     const headers = lines[0].split(",");
 
-    for (let i = 1; i < lines.length; i++) {
+    for (let i = 1; i < lines.length - 1; i++) {
       const obj: Record<string, any> = {};
       const currentline = lines[i].split(",");
 
-      for (let j = 0; j < headers.length; j++) {
-        obj[headers[j]] = currentline[j];
+      for (let j = 0; j < headers.length - 1; j++) {
+        const slugifiedKey = slugify(headers[j]);
+        obj[slugifiedKey!] = convertStringToNumber(currentline[j]);
       }
 
-      result.push(obj);
+      result.push((obj as unknown) as convertedData)
     }
     console.log(result, 'csv')
     return result;
   }
 
-  const convertXmlToJson = (xml: string) => {
+  const convertXmlToData = (xml: string): convertedData[] => {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
     const result = [];
@@ -65,14 +80,16 @@ const Input = ({ label, ...props }: InputProps) => {
       const obj: Record<string, any> = {};
 
       const reference = records[i].getAttribute("reference");
-      obj['reference'] = reference;
+      const slugifiedKey = slugify(reference!);
+      obj[slugifiedKey!] = Number(reference);
 
       const children = records[i].children;
       for (let j = 0; j < children.length; j++) {
-        obj[children[j].tagName!] = children[j].innerHTML;
+        const slugifiedKey = slugify(children[j].tagName);
+        obj[slugifiedKey!] = convertStringToNumber(children[j].innerHTML);
       }
 
-      result.push(obj);
+      result.push((obj as unknown) as convertedData);
     }
     console.log(result, 'xml')
 
@@ -83,17 +100,27 @@ const Input = ({ label, ...props }: InputProps) => {
     if (!file) return;
     
     if (fileType === "text/csv") {
-      return convertCsvToJson(fileText!);
+      return convertCsvToData(fileText!);
     } 
     
     if (fileType === "text/xml") {
-      return convertXmlToJson(fileText!);
+      return convertXmlToData(fileText!);
     }
 
     return 'Please provie a valid file';
   }
 
- 
+  const validateObj = (obj: convertedData[]) => {
+    const hasDuplicateReference = obj.reduce((acc, curr) => {
+      acc[curr.reference] = ++acc[curr.reference] || 0;
+      return acc
+    }, {} as Record<string, number>)
+
+    const duplicateReferences = obj.filter(e => hasDuplicateReference[e.reference]);
+    console.log(hasDuplicateReference, 'hasDuplicateReference');
+    console.log(duplicateReferences, 'duplicateReferences');
+  }
+
   return (
     <s.inputWrapper>
       <h2>Insert your file here: </h2>
