@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`convertXmlToData function 1`] = `
+Array [
+  Object {
+    "accountNumber": "NL123",
+    "description": "description",
+    "endBalance": 1.23,
+    "mutation": 1.23,
+    "reference": 123,
+    "startBalance": 1.23,
+  },
+]
+`;
