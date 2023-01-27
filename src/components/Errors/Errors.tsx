@@ -22,7 +22,7 @@ export const Errors = ({ errors, file }: ErrorsProps) => {
   return (
     <s.errorContainer>
       <s.informationWrapper>
-        <h3>Provid file information</h3>
+        <h3>Provided file information</h3>
         <p><b>Name:</b> {file.name}</p>
         <p><b>Type:</b> {file.type}</p>
         <p><b>Date:</b> {date.toDateString()}</p>
@@ -32,7 +32,7 @@ export const Errors = ({ errors, file }: ErrorsProps) => {
           <>
             <p><b>Items checked:</b> {totalAmount}</p>
             <p><b>Errors:</b> {errorAmount}</p>
-            <s.progressbar width={100 -errorPercentage}>
+            <s.progressbar>
               <s.innerBar width={errorPercentage}>
               </s.innerBar>
             </s.progressbar>
