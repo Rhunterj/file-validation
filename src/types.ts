@@ -7,7 +7,14 @@ export type convertedDataType = {
   startBalance: number;
 }
 
+export type fileType = {
+  name: string;
+  type: string;
+}
+
 export type errorsType = {
   duplicateKeys: convertedDataType[];
   invalidEndBalance: convertedDataType[];
+  invalidFileType: fileType;
+  itemsChecked: number;
 }

@@ -1,4 +1,4 @@
-export const errorsMock = {
+export const validateErrorMock = {
   duplicateKeys: [
     {
       accountNumber: "NL90ABNA0585647886",
@@ -27,9 +27,5 @@ export const errorsMock = {
       startBalance: 5429,
     },
   ],
-  invalidFileType: {
-    name: '',
-    type: '',
-  },
   itemsChecked: 5,
 };

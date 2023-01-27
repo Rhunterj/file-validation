@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`convertCsvToData function 1`] = `
+Array [
+  Object {
+    "accountNumber": "NL123",
+    "description": "description",
+    "endBalance": 123,
+    "mutation": 123,
+    "reference": 123,
+    "startBalance": 123,
+  },
+]
+`;

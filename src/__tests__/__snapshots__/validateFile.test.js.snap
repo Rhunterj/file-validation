@@ -30,5 +30,6 @@ Object {
       "startBalance": 5429,
     },
   ],
+  "itemsChecked": 5,
 }
 `;

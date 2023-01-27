@@ -3,5 +3,5 @@ import App from '../App';
 
 test('renders the app', () => {
   render(<App />);
-  expect(screen.getByText(/Insert your file here:/i)).toBeInTheDocument();
+  expect(screen.getByText(/Provide your file here:/i)).toBeInTheDocument();
 });

@@ -9,6 +9,7 @@ export const reset = styled.div`
 
 export const container = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   background-color: #282c34;
   color: white;
@@ -18,3 +19,9 @@ export const container = styled.div`
   box-sizing: border-box;
   align-items: center;
 `;
+
+export const title = styled.h1`
+  margin-bottom: 0;
+  margin-top: 0;
+`;
+

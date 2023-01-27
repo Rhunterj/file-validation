@@ -6,7 +6,9 @@ const App = () => {
   return (
     <s.reset>
       <s.container>
-        <Input label="test" />
+        <s.title>Robbin's file validator</s.title>
+        <p>This application validates .xml and .csv files provided by the user.</p>
+        <Input label="Provide your file here:" />
       </s.container>
     </s.reset>
   );

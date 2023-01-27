@@ -14,6 +14,7 @@ export const validate = (obj: convertedDataType[]): errorsType => {
   const hasInvalidEndBalance = obj.filter((item) => checkEndbalance(item));
 
   errors.invalidEndBalance = hasInvalidEndBalance;
-
+  errors.itemsChecked = obj.length;
+  
   return errors;
 }
