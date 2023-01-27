@@ -25,8 +25,7 @@ const Input = ({ label, ...props }: InputProps) => {
     reader.onload = () => {
       const fileText = reader.result as string;
       const json = convertFileToJson(fileText, type);
-      console.log(json, 'fileText')
-
+     
       if(typeof json === 'object' && json !== null) {
         const errorsObj = validate(json);
         setErrors(errorsObj);
