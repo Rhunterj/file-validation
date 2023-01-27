@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { slugify } from "../../helpers/slugify";
-import { convertStringToNumber } from "../../helpers/stringToNumber";
-import { convertedDataType, errorsType } from "../../types";
+import React, { useState } from "react";
+import { errorsType } from "../../types";
 import { validate } from "../../helpers/validate";
 import * as s from "./Input.styled";
 import { Errors } from "../Errors/Errors";
+import { convertCsvToData } from "../../helpers/convertCsvToData";
+import { convertXmlToData } from "../../helpers/convertXmlToData";
 
 interface InputProps {
   label: string;
@@ -34,36 +34,6 @@ const Input = ({ label, ...props }: InputProps) => {
   
     // set encoding to iso-8859-1 to avoid encoding issues
     reader.readAsText(file, "iso-8859-1");
-  }
-
-  const convertCsvToData = (csv: string): convertedDataType[] => {
-    const lines = csv.split("\n").slice(1);
-    lines.pop(); // remove last empty line
-
-    return lines.map(line => {
-      const values = line.split(",");
-      const headers = csv.split("\n")[0].split(",");
-
-      return headers.reduce((obj: any, header: string, index: number) => {
-        obj[slugify(header)] = convertStringToNumber(values[index]);
-        return obj;
-      }, {}) as convertedDataType
-    });
-  }
-
-  const convertXmlToData = (xml: string): convertedDataType[] => {
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xml, "text/xml");
-    const records = xmlDoc.querySelectorAll('record');
-
-    return Array.from(records, record => {
-      const obj: Record<string, any> = {};
-      obj['reference'] = Number(record.getAttribute("reference"));
-      Array.from(record.children).forEach(child => {
-        obj[child.tagName] = convertStringToNumber(child.innerHTML);
-      });
-      return obj as convertedDataType;
-    });
   }
 
   const convertFileToJson = (file: string, type: string) => {
