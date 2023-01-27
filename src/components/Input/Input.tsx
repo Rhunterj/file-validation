@@ -11,40 +11,26 @@ interface InputProps {
 }
 
 const Input = ({ label, ...props }: InputProps) => {
-  const [file, setFile] = useState<File | null>(null);
-  const [fileText, setFileText] = useState<string | null>(null); 
-  const [fileType, setFileType] = useState<string | null>(null);
   const [errors, setErrors] = useState<errorsType>({ duplicateKeys: [], invalidEndBalance: [] });
 
-  useEffect(() => {
-    if (file) {
-      readFile(file);
-    }
-  }, [file])
-  
-  useEffect(() => {
-    if (fileText) {
-      const json = convertFileToJson(fileText);
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
+    if (!e.target.files?.[0]) return; // if no file is selected (e.g. user clicks cancel
+    
+    readFile(e.target.files[0], e.target.files[0].type);
+  }
+
+  const readFile = (file: File, type: string) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const fileText = reader.result as string;
+      const json = convertFileToJson(fileText, type);
+      console.log(json, 'fileText')
 
       if(typeof json === 'object' && json !== null) {
         const errorsObj = validate(json);
         setErrors(errorsObj);
       }
-    }
-  }, [fileText]);
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
-    if (!e.target.files?.[0]) return; // if no file is selected (e.g. user clicks cancel
-    
-    setFile(e.target.files[0]);
-    setFileType(e.target.files[0].type);
-  }
-
-  const readFile = (file: File) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      setFileText(reader.result as string);
     };
   
     // set encoding to iso-8859-1 to avoid encoding issues
@@ -52,57 +38,44 @@ const Input = ({ label, ...props }: InputProps) => {
   }
 
   const convertCsvToData = (csv: string): convertedDataType[] => {
-    const lines = csv.split("\n");
-    const result = [];
-    const headers = lines[0].split(",");
+    const lines = csv.split("\n").slice(1);
+    lines.pop(); // remove last empty line
 
-    for (let i = 1; i < lines.length - 1; i++) {
-      const obj: Record<string, any> = {};
-      const currentline = lines[i].split(",");
+    return lines.map(line => {
+      const values = line.split(",");
+      const headers = csv.split("\n")[0].split(",");
 
-      for (let j = 0; j < headers.length; j++) {
-        const slugifiedKey = slugify(headers[j]);
-        obj[slugifiedKey!] = convertStringToNumber(currentline[j]);
-      }
-
-      result.push((obj as unknown) as convertedDataType)
-    }
-
-    return result;
+      return headers.reduce((obj: any, header: string, index: number) => {
+        obj[slugify(header)] = convertStringToNumber(values[index]);
+        return obj;
+      }, {}) as convertedDataType
+    });
   }
 
   const convertXmlToData = (xml: string): convertedDataType[] => {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
-    const result = [];
-    const records = xmlDoc.querySelectorAll('record')!;
+    const records = xmlDoc.querySelectorAll('record');
 
-    for (let i = 0; i < records.length; i++) {
+    return Array.from(records, record => {
       const obj: Record<string, any> = {};
-
-      const reference = records[i].getAttribute("reference");
-      obj['reference'] = Number(reference);
-
-      const children = records[i].children;
-      for (let j = 0; j < children.length; j++) {
-        obj[children[j].tagName!] = convertStringToNumber(children[j].innerHTML);
-      }
-
-      result.push((obj as unknown) as convertedDataType);
-    }
-
-    return result;
+      obj['reference'] = Number(record.getAttribute("reference"));
+      Array.from(record.children).forEach(child => {
+        obj[child.tagName] = convertStringToNumber(child.innerHTML);
+      });
+      return obj as convertedDataType;
+    });
   }
 
-  const convertFileToJson = (file: string) => {
+  const convertFileToJson = (file: string, type: string) => {
     if (!file) return;
     
-    if (fileType === "text/csv") {
-      return convertCsvToData(fileText!);
+    if (type === "text/csv") {
+      return convertCsvToData(file!);
     } 
     
-    if (fileType === "text/xml") {
-      return convertXmlToData(fileText!);
+    if (type === "text/xml") {
+      return convertXmlToData(file!);
     }
 
     return 'Please provide a valid file';
