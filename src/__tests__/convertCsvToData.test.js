@@ -12,4 +12,6 @@ test('convertCsvToData function', () => {
     mutation: 123,
     endBalance: 123
   }]);
+
+  expect(result).toMatchSnapshot();
 });
