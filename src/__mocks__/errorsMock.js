@@ -1,4 +1,6 @@
 export const errorsMock = {
+  date: "Sun Jan 01 2017",
+  time: "01:00:00",
   duplicateKeys: [
     {
       accountNumber: "NL90ABNA0585647886",

@@ -5,6 +5,7 @@ import * as s from "./Input.styled";
 import { Errors } from "../Errors/Errors";
 import { convertCsvToData } from "../../helpers/convertCsvToData";
 import { convertXmlToData } from "../../helpers/convertXmlToData";
+import { getDateAndTime } from "../../helpers/getDateAndTime";
 
 interface InputProps {
   label: string;
@@ -12,7 +13,8 @@ interface InputProps {
 
 const Input = ({ label, ...props }: InputProps) => {
   const [errors, setErrors] = useState<errorsType[]>([]);
-  const [file, setFile] = useState<any | null>({ name: "", type: "" });
+  const [fileData, setFileData] = useState<any | null>([]);
+  const { date, time } = getDateAndTime();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0]) return; // if no file is selected (e.g. user clicks cancel
@@ -24,6 +26,8 @@ const Input = ({ label, ...props }: InputProps) => {
       setErrors([
         ...errors,
         {
+          date: date,
+          time: time,
           duplicateKeys: [],
           invalidEndBalance: [],
           invalidFileType: {
@@ -33,11 +37,14 @@ const Input = ({ label, ...props }: InputProps) => {
           itemsChecked: 0,
         },
       ]);
+      setFileData([...fileData, { name: e.target.files[0].name, type: e.target.files[0].type }]);
+
       return;
     }
 
     readFile(e.target.files[0], e.target.files[0].type);
-    setFile({ name: e.target.files[0].name, type: e.target.files[0].type });
+    setFileData([...fileData, { name: e.target.files[0].name, type: e.target.files[0].type }]);
+
   };
 
   const readFile = (file: File, type: string) => {
@@ -77,7 +84,7 @@ const Input = ({ label, ...props }: InputProps) => {
         {errors.length > 0 && (
           <>
             {errors.map((error, index) => {
-              return <Errors key={index} errors={error} file={file} />;
+              return <Errors key={index} errors={error} fileData={fileData[index]}/>;
             })}
           </>
         )}

@@ -13,6 +13,8 @@ export type fileType = {
 }
 
 export type errorsType = {
+  date: string,
+  time: string,
   duplicateKeys: convertedDataType[];
   invalidEndBalance: convertedDataType[];
   invalidFileType: fileType;

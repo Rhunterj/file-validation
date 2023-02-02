@@ -25,8 +25,9 @@ export const label = styled.label`
 export const errorCards = styled.div`
   display: flex;
   flex-direction: column;
-  height: 600px;
+  max-height: 600px;
   overflow: scroll;
+  flex-flow: column-reverse;
 
   &::-webkit-scrollbar {
     display: none;

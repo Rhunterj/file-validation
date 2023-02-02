@@ -4,29 +4,25 @@ import { errorsType } from "../../types";
 
 interface ErrorsProps {
   errors: errorsType;
-  file: { name: string; type: string };
+  fileData: { name: string; type: string; };
 }
 
-export const Errors = ({ errors, file }: ErrorsProps) => {
+export const Errors = ({ errors, fileData }: ErrorsProps) => {
   const duplicateErrors = errors.duplicateKeys.length > 0;
   const invalidEndBalance = errors.invalidEndBalance.length > 0;
   const invalidFileType = errors.invalidFileType?.name.length > 0;
   const errorAmount = errors.duplicateKeys.length + errors.invalidEndBalance.length;
   const totalAmount = errors.itemsChecked;
   const errorPercentage = (errorAmount / totalAmount) * 100;
-  const date = new Date();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const seconds = date.getSeconds();
-  
+
   return (
     <s.errorContainer>
       <s.informationWrapper>
         <h3>Provided file information</h3>
-        <p><b>Name:</b> {file.name}</p>
-        <p><b>Type:</b> {file.type}</p>
-        <p><b>Date:</b> {date.toDateString()}</p>
-        <p><b>Time:</b> {hours}:{minutes}:{seconds}</p>
+        <p><b>Name:</b> {fileData.name}</p>
+        <p><b>Type:</b> {fileData.type}</p>
+        <p><b>Date:</b> {errors.date}</p>
+        <p><b>Time:</b> {errors.time}</p>
         <h3>Validation information</h3>
         {!invalidFileType && (
           <>

@@ -2,6 +2,7 @@
 
 exports[`validateFile function 1`] = `
 Object {
+  "date": "Sun Jan 01 2017",
   "duplicateKeys": Array [
     Object {
       "accountNumber": "NL90ABNA0585647886",
@@ -31,5 +32,6 @@ Object {
     },
   ],
   "itemsChecked": 5,
+  "time": "01:00:00",
 }
 `;
