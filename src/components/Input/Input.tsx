@@ -11,12 +11,7 @@ interface InputProps {
 }
 
 const Input = ({ label, ...props }: InputProps) => {
-  const [errors, setErrors] = useState<errorsType>({
-    duplicateKeys: [],
-    invalidEndBalance: [],
-    invalidFileType: { name: "", type: "" },
-    itemsChecked: 0,
-  });
+  const [errors, setErrors] = useState<errorsType[]>([]);
   const [file, setFile] = useState<any | null>({ name: "", type: "" });
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,15 +21,18 @@ const Input = ({ label, ...props }: InputProps) => {
       e.target.files[0].type !== "text/csv" &&
       e.target.files[0].type !== "text/xml"
     ) {
-      setErrors({
-        duplicateKeys: [],
-        invalidEndBalance: [],
-        invalidFileType: {
-          name: e.target.files[0].name,
-          type: e.target.files[0].type,
+      setErrors([
+        ...errors,
+        {
+          duplicateKeys: [],
+          invalidEndBalance: [],
+          invalidFileType: {
+            name: e.target.files[0].name,
+            type: e.target.files[0].type,
+          },
+          itemsChecked: 0,
         },
-        itemsChecked: 0,
-      });
+      ]);
       return;
     }
 
@@ -51,7 +49,7 @@ const Input = ({ label, ...props }: InputProps) => {
 
       if (typeof json === "object" && json !== null) {
         const errorsObj = validate(json);
-        setErrors(errorsObj);
+        setErrors([...errors, errorsObj]);
       }
     };
 
@@ -75,11 +73,15 @@ const Input = ({ label, ...props }: InputProps) => {
         <s.label>{label}</s.label>
         <input type="file" accept=".csv, .xml" {...props} onChange={onChange} />
       </s.labelWrapper>
-      {(errors.duplicateKeys.length > 0 ||
-        errors.invalidEndBalance.length > 0 ||
-        errors.invalidFileType.name.length > 0) && (
-        <Errors errors={errors} file={file} />
-      )}
+      <s.errorCards>
+        {errors.length > 0 && (
+          <>
+            {errors.map((error, index) => {
+              return <Errors key={index} errors={error} file={file} />;
+            })}
+          </>
+        )}
+      </s.errorCards>
     </s.inputWrapper>
   );
 };

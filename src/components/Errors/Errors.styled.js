@@ -9,7 +9,11 @@ export const errorContainer = styled.div`
   margin: 20px;  
   box-shadow: rgba(250, 250, 250, 0.25) 0px 14px 28px, rgba(250, 250, 250, 0.22) 0px 10px 10px;
   width: 400px;
-
+  min-width: 400px;
+  
+  &:first-of-type {
+    margin-top: 0;
+  }
   h3 {
     margin-bottom: 15px;
   }
